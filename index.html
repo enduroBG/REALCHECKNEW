@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>REALCheck Ultra - Multi-Model Truth Analyzer</title>
+    <title>REALCheck Ultra - Active Search</title>
     <style>
         :root {
             --bg-dark: #0d1117;
@@ -18,247 +18,127 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; }
-        
-        body { 
-            background-color: var(--bg-dark); 
-            color: var(--text-main); 
-            display: flex; 
-            height: 100vh; 
-            overflow: hidden; 
-        }
+        body { background-color: var(--bg-dark); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
 
-        .sidebar { 
-            width: 260px; 
-            background-color: var(--card-bg); 
-            padding: 25px; 
-            border-right: 1px solid var(--border); 
-            display: flex; 
-            flex-direction: column; 
-            flex-shrink: 0;
-        }
-
-        .logo { 
-            font-size: 26px; 
-            font-weight: 800; 
-            color: #fff; 
-            margin-bottom: 45px; 
-            display: flex; 
-            align-items: center; 
-            gap: 12px; 
-        }
+        /* SIDEBAR */
+        .sidebar { width: 260px; background-color: var(--card-bg); padding: 25px; border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; }
+        .logo { font-size: 24px; font-weight: 800; color: #fff; margin-bottom: 40px; display: flex; align-items: center; gap: 10px; }
         .logo span { color: var(--accent); }
 
-        .menu-item { 
-            padding: 12px 16px; 
-            margin-bottom: 10px; 
-            border-radius: 8px; 
-            cursor: pointer; 
-            color: var(--text-dim); 
-            transition: 0.3s; 
-            display: flex; 
-            align-items: center; 
-            gap: 10px; 
-        }
-        .menu-item:hover { background-color: #21262d; color: #fff; }
-        .menu-item.active { background-color: #238636; color: #fff; }
+        /* MAIN CONTENT */
+        .main-content { flex: 1; padding: 40px; overflow-y: auto; background: radial-gradient(circle at top right, #1d2129 0%, #0d1117 60%); }
 
-        .main-content { 
-            flex: 1; 
-            padding: 40px; 
-            overflow-y: auto; 
-            background: radial-gradient(circle at top right, #161b22 0%, #0d1117 40%); 
+        /* SEARCH BOX */
+        .search-section { margin-bottom: 40px; background: var(--card-bg); padding: 20px; border-radius: 12px; border: 1px solid var(--border); }
+        .search-container { display: flex; gap: 10px; }
+        input[type="text"] { 
+            flex: 1; background: #0d1117; border: 1px solid var(--border); 
+            padding: 12px 20px; border-radius: 8px; color: #fff; font-size: 16px; outline: none;
         }
+        input[type="text"]:focus { border-color: var(--accent); }
 
-        .header-area { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 30px; 
-        }
-
+        /* CARDS */
         .result-card { 
-            background-color: var(--card-bg); 
-            border-radius: 20px; 
-            padding: 35px; 
-            margin-bottom: 30px; 
-            display: flex; 
-            align-items: center; 
-            border: 1px solid var(--border); 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3); 
-            position: relative; 
-            overflow: hidden;
-            flex-wrap: wrap;
-            gap: 30px;
+            background: var(--card-bg); border-radius: 16px; padding: 30px; 
+            border: 1px solid var(--border); display: none; /* Скрито докато не се търси */
+            align-items: center; gap: 30px; margin-bottom: 30px;
+            animation: slideUp 0.5s ease-out;
         }
         
-        .result-card::before { 
-            content: ""; 
-            position: absolute; 
-            top: 0; 
-            left: 0; 
-            width: 4px; 
-            height: 100%; 
-            background: var(--accent); 
-        }
-
-        .score-circle-container { flex-shrink: 0; }
         .score-circle { 
-            width: 140px; 
-            height: 140px; 
-            border-radius: 50%; 
-            border: 10px solid var(--accent); 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            background: rgba(63, 185, 80, 0.05); 
-        }
-        .score-value { font-size: 42px; font-weight: 800; color: #fff; }
-        .score-max { font-size: 16px; color: var(--text-dim); }
-
-        .result-info { flex: 1; min-width: 300px; }
-        .result-info h3 { font-size: 26px; margin-bottom: 10px; color: #fff; }
-        .result-info p { color: var(--text-dim); line-height: 1.6; margin-bottom: 20px; }
-
-        .badge { 
-            background: rgba(66, 133, 244, 0.15); 
-            color: var(--google-blue); 
-            padding: 6px 14px; 
-            border-radius: 20px; 
-            font-size: 13px; 
-            font-weight: 600; 
-            border: 1px solid var(--google-blue); 
-            display: inline-block;
-            margin-bottom: 10px;
+            width: 120px; height: 120px; border-radius: 50%; border: 8px solid var(--accent); 
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
 
-        .stats-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
-            gap: 25px; 
-        }
-        .card { 
-            background-color: var(--card-bg); 
-            border-radius: 16px; 
-            padding: 25px; 
-            border: 1px solid var(--border); 
-        }
-        .card h4 { margin-bottom: 20px; color: var(--text-dim); text-transform: uppercase; font-size: 12px; letter-spacing: 1px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; display: none; }
+        .card { background: var(--card-bg); padding: 20px; border-radius: 12px; border: 1px solid var(--border); }
 
-        .model-row { display: flex; align-items: center; margin-bottom: 18px; }
-        .model-name { width: 140px; font-size: 14px; font-weight: 500; }
-        .progress-container { flex: 1; height: 8px; background: #30363d; border-radius: 4px; margin: 0 15px; overflow: hidden; }
-        .progress-bar { height: 100%; border-radius: 4px; transition: width 1s ease-in-out; }
-        .model-val { width: 40px; font-size: 13px; text-align: right; color: var(--accent); font-weight: 600; }
+        /* LOADER */
+        #loader { display: none; margin: 20px 0; color: var(--warning); font-weight: bold; }
 
-        .claim-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #21262d; font-size: 14px; }
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 8px; }
+        .btn-main { background: var(--accent); color: #fff; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+        .btn-main:disabled { background: #234d2b; cursor: not-allowed; }
 
-        .btn-main { 
-            background-color: var(--accent); 
-            color: #fff; 
-            border: none; 
-            padding: 12px 25px; 
-            border-radius: 8px; 
-            cursor: pointer; 
-            font-weight: 600; 
-            transition: 0.3s; 
-        }
-        .btn-main:hover { opacity: 0.9; transform: translateY(-2px); }
-
-        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
-        .analyzing { animation: pulse 1.5s infinite; color: var(--warning); }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
+
     <aside class="sidebar">
         <div class="logo">🛡️ <span>REAL</span>Check</div>
-        <nav>
-            <div class="menu-item active">🏠 Начало</div>
-            <div class="menu-item">🔍 Нова проверка</div>
-            <div class="menu-item">🕒 История</div>
-            <div class="menu-item">📊 Статистика</div>
-        </nav>
+        <div style="color: var(--text-dim); font-size: 14px;">Система: Активна</div>
     </aside>
 
     <main class="main-content">
-        <header class="header-area">
-            <h2>Аналитично табло</h2>
-            <button class="btn-main" onclick="simulateAnalysis()">+ Стартирай нов анализ</button>
-        </header>
+        <h2>Проверка на информация</h2>
+        <p style="color: var(--text-dim); margin-bottom: 20px;">Въведете твърдение или линк за анализ от AI моделите и Google Fact Check.</p>
 
-        <section class="result-card">
-            <div class="score-circle-container">
-                <div class="score-circle">
-                    <span class="score-value" id="scoreNum">82</span>
-                    <span class="score-max">/ 100</span>
-                </div>
+        <section class="search-section">
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Поставете текст за проверка тук...">
+                <button class="btn-main" id="searchBtn" onclick="performSearch()">Анализирай</button>
             </div>
-            <div class="result-info">
-                <span class="badge">✓ Потвърдено от Google Fact Check</span>
-                <h3>Умерен риск от манипулация</h3>
-                <p id="summaryText">Анализираният текст съдържа твърдения, които са частично верни, но липсва контекст. AI моделите засякоха логическо противоречие.</p>
-                <div style="display: flex; gap: 15px;">
-                    <button class="btn-main" style="background: #21262d; border: 1px solid var(--border);">Свали PDF</button>
-                    <button class="btn-main">Детайли</button>
-                </div>
+            <div id="loader">⚙️ Свързване с Gemini, Llama 3 и Google Fact Check API...</div>
+        </section>
+
+        <section class="result-card" id="resultCard">
+            <div class="score-circle">
+                <span style="font-size: 32px; font-weight: 800;" id="finalScore">0</span>
+                <span style="font-size: 12px; color: var(--text-dim);">РЕАЛНОСТ</span>
+            </div>
+            <div>
+                <div id="factCheckBadge" class="badge" style="color: var(--google-blue); border: 1px solid; padding: 2px 8px; border-radius: 10px; font-size: 12px; margin-bottom: 10px; display: inline-block;">Google Fact Check: Проверка...</div>
+                <h3 id="resultTitle">Анализът е готов</h3>
+                <p id="resultText" style="color: var(--text-dim); margin-top: 10px;"></p>
             </div>
         </section>
 
-        <div class="stats-grid">
+        <div class="stats-grid" id="statsGrid">
             <div class="card">
-                <h4>AI Консенсус</h4>
-                <div class="model-row">
-                    <span class="model-name">Gemini 1.5 Flash</span>
-                    <div class="progress-container"><div class="progress-bar" style="width: 85%; background: var(--accent);"></div></div>
-                    <span class="model-val">85%</span>
-                </div>
-                <div class="model-row">
-                    <span class="model-name">Llama 3 (Meta)</span>
-                    <div class="progress-container"><div class="progress-bar" style="width: 78%; background: var(--accent);"></div></div>
-                    <span class="model-val">78%</span>
-                </div>
-                <div class="model-row" style="margin-top: 20px; padding-top: 10px; border-top: 1px solid var(--border);">
-                    <span class="model-name" style="color: var(--google-blue);">Google Database</span>
-                    <div class="progress-container"><div class="progress-bar" style="width: 100%; background: var(--google-blue);"></div></div>
-                    <span class="model-val" style="color: var(--google-blue);">100%</span>
-                </div>
+                <h4>Консенсус (AI Consensus)</h4>
+                <p>Gemini 1.5: <span style="color: var(--accent);">92%</span></p>
+                <p>Llama 3: <span style="color: var(--accent);">89%</span></p>
+                <p>Mistral: <span style="color: var(--accent);">94%</span></p>
             </div>
-
             <div class="card">
-                <h4>Разбивка</h4>
-                <div class="claim-item">
-                    <span><span class="status-dot" style="background: var(--accent);"></span>Факти</span>
-                    <span style="font-weight: 600;">08</span>
-                </div>
-                <div class="claim-item">
-                    <span><span class="status-dot" style="background: var(--warning);"></span>Липсва източник</span>
-                    <span style="font-weight: 600;">03</span>
-                </div>
-                <div class="claim-item">
-                    <span><span class="status-dot" style="background: var(--danger);"></span>Дезинформация</span>
-                    <span style="font-weight: 600;">01</span>
-                </div>
+                <h4>Източници</h4>
+                <p id="sourceInfo">Открити съвпадения в 4 независими източника.</p>
             </div>
         </div>
     </main>
 
     <script>
-        function simulateAnalysis() {
-            const btn = document.querySelector('.btn-main');
-            const score = document.getElementById('scoreNum');
-            const summary = document.getElementById('summaryText');
-            btn.innerHTML = "Анализиране...";
-            btn.classList.add('analyzing');
-            score.innerHTML = "--";
-            summary.innerHTML = "Изпращане на заявки към моделите...";
+        function performSearch() {
+            const input = document.getElementById('searchInput').value;
+            const btn = document.getElementById('searchBtn');
+            const loader = document.getElementById('loader');
+            const resultCard = document.getElementById('resultCard');
+            const statsGrid = document.getElementById('statsGrid');
+
+            if (!input) {
+                alert("Моля, въведете текст за анализ!");
+                return;
+            }
+
+            // Симулация на работа
+            btn.disabled = true;
+            loader.style.display = "block";
+            resultCard.style.display = "none";
+            statsGrid.style.display = "none";
+
             setTimeout(() => {
-                btn.innerHTML = "+ Стартирай нов анализ";
-                btn.classList.remove('analyzing');
-                score.innerHTML = "94";
-                summary.innerHTML = "Анализът приключи успешно. Всички системи потвърдиха информацията.";
-                document.querySelectorAll('.progress-bar').forEach(bar => { bar.style.width = "95%"; });
-            }, 2000);
+                loader.style.display = "none";
+                btn.disabled = false;
+                
+                // Визуализиране на резултата
+                resultCard.style.display = "flex";
+                statsGrid.style.display = "grid";
+                
+                document.getElementById('finalScore').innerText = "96";
+                document.getElementById('resultText').innerText = "Твърдението: '" + input + "' беше потвърдено от всички безплатни AI модели и базата данни на Google. Информацията е достоверна.";
+                document.getElementById('factCheckBadge').innerText = "✓ Google Fact Check: ПОТВЪРДЕНО";
+                document.getElementById('factCheckBadge').style.color = "var(--accent)";
+            }, 2500);
         }
     </script>
 </body>
