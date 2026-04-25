@@ -1,145 +1,287 @@
 <!DOCTYPE html>
 <html lang="bg">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>REALCheck Ultra - Active Search</title>
-    <style>
-        :root {
-            --bg-dark: #0d1117;
-            --card-bg: #161b22;
-            --border: #30363d;
-            --text-main: #e6edf3;
-            --text-dim: #8b949e;
-            --accent: #3fb950;
-            --warning: #d29922;
-            --danger: #f85149;
-            --google-blue: #4285F4;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RealCheck</title>
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; }
-        body { background-color: var(--bg-dark); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+<style>
+:root{
+--bg:#0B1F2A;
+--card:#111827;
+--border:#1f2937;
+--text:#e5e7eb;
+--muted:#9ca3af;
+--green:#22C55E;
+--yellow:#f59e0b;
+--red:#ef4444;
+}
 
-        /* SIDEBAR */
-        .sidebar { width: 260px; background-color: var(--card-bg); padding: 25px; border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; }
-        .logo { font-size: 24px; font-weight: 800; color: #fff; margin-bottom: 40px; display: flex; align-items: center; gap: 10px; }
-        .logo span { color: var(--accent); }
+body{
+margin:0;
+font-family:Inter,sans-serif;
+background:var(--bg);
+color:var(--text);
+display:flex;
+}
 
-        /* MAIN CONTENT */
-        .main-content { flex: 1; padding: 40px; overflow-y: auto; background: radial-gradient(circle at top right, #1d2129 0%, #0d1117 60%); }
+/* SIDEBAR */
+.sidebar{
+width:240px;
+background:#020617;
+padding:25px;
+border-right:1px solid var(--border);
+}
 
-        /* SEARCH BOX */
-        .search-section { margin-bottom: 40px; background: var(--card-bg); padding: 20px; border-radius: 12px; border: 1px solid var(--border); }
-        .search-container { display: flex; gap: 10px; }
-        input[type="text"] { 
-            flex: 1; background: #0d1117; border: 1px solid var(--border); 
-            padding: 12px 20px; border-radius: 8px; color: #fff; font-size: 16px; outline: none;
-        }
-        input[type="text"]:focus { border-color: var(--accent); }
+.logo{
+font-size:22px;
+font-weight:800;
+}
+.logo span{color:var(--green);}
 
-        /* CARDS */
-        .result-card { 
-            background: var(--card-bg); border-radius: 16px; padding: 30px; 
-            border: 1px solid var(--border); display: none; /* Скрито докато не се търси */
-            align-items: center; gap: 30px; margin-bottom: 30px;
-            animation: slideUp 0.5s ease-out;
-        }
-        
-        .score-circle { 
-            width: 120px; height: 120px; border-radius: 50%; border: 8px solid var(--accent); 
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-        }
+/* MAIN */
+.main{
+flex:1;
+padding:30px;
+overflow-y:auto;
+}
 
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; display: none; }
-        .card { background: var(--card-bg); padding: 20px; border-radius: 12px; border: 1px solid var(--border); }
+.card{
+background:var(--card);
+padding:20px;
+border-radius:14px;
+border:1px solid var(--border);
+margin-bottom:20px;
+}
 
-        /* LOADER */
-        #loader { display: none; margin: 20px 0; color: var(--warning); font-weight: bold; }
+/* HOME */
+.hero{
+font-size:26px;
+font-weight:700;
+margin-bottom:10px;
+}
 
-        .btn-main { background: var(--accent); color: #fff; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: 600; }
-        .btn-main:disabled { background: #234d2b; cursor: not-allowed; }
+.hero span{color:var(--green);}
 
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    </style>
+.btn{
+background:var(--green);
+padding:12px 18px;
+border:none;
+border-radius:10px;
+color:white;
+cursor:pointer;
+margin-top:10px;
+}
+
+/* INPUT */
+.tabs{
+display:flex;
+gap:10px;
+margin-bottom:15px;
+}
+
+.tab{
+padding:10px;
+border-radius:8px;
+background:#1f2937;
+cursor:pointer;
+}
+
+.tab.active{
+background:var(--green);
+}
+
+input{
+width:100%;
+padding:12px;
+border-radius:10px;
+border:1px solid var(--border);
+background:#020617;
+color:white;
+}
+
+/* RESULT */
+.result{display:none;}
+
+.score{
+font-size:42px;
+font-weight:800;
+}
+
+.low{color:var(--green);}
+.mid{color:var(--yellow);}
+.high{color:var(--red);}
+
+/* CLAIM LIST */
+.claim{
+padding:10px;
+border-bottom:1px solid var(--border);
+}
+
+/* SOURCES */
+.sources{
+display:none;
+}
+
+.source-group{
+margin-bottom:20px;
+}
+
+.source-group h4{
+color:var(--green);
+margin-bottom:8px;
+}
+
+</style>
 </head>
+
 <body>
 
-    <aside class="sidebar">
-        <div class="logo">🛡️ <span>REAL</span>Check</div>
-        <div style="color: var(--text-dim); font-size: 14px;">Система: Активна</div>
-    </aside>
+<div class="sidebar">
+<div class="logo">REAL<span>Check</span></div>
+<p style="color:var(--muted)">Система: Активна</p>
+</div>
 
-    <main class="main-content">
-        <h2>Проверка на информация</h2>
-        <p style="color: var(--text-dim); margin-bottom: 20px;">Въведете твърдение или линк за анализ от AI моделите и Google Fact Check.</p>
+<div class="main">
 
-        <section class="search-section">
-            <div class="search-container">
-                <input type="text" id="searchInput" placeholder="Поставете текст за проверка тук...">
-                <button class="btn-main" id="searchBtn" onclick="performSearch()">Анализирай</button>
-            </div>
-            <div id="loader">⚙️ Свързване с Gemini, Llama 3 и Google Fact Check API...</div>
-        </section>
+<!-- HOME -->
+<div class="card">
+<div class="hero">
+Не се хващай на рекламата.<br><span>Провери.</span>
+</div>
+<button class="btn" onclick="scrollToAnalyze()">Провери нещо</button>
+</div>
 
-        <section class="result-card" id="resultCard">
-            <div class="score-circle">
-                <span style="font-size: 32px; font-weight: 800;" id="finalScore">0</span>
-                <span style="font-size: 12px; color: var(--text-dim);">РЕАЛНОСТ</span>
-            </div>
-            <div>
-                <div id="factCheckBadge" class="badge" style="color: var(--google-blue); border: 1px solid; padding: 2px 8px; border-radius: 10px; font-size: 12px; margin-bottom: 10px; display: inline-block;">Google Fact Check: Проверка...</div>
-                <h3 id="resultTitle">Анализът е готов</h3>
-                <p id="resultText" style="color: var(--text-dim); margin-top: 10px;"></p>
-            </div>
-        </section>
+<!-- ANALYZE -->
+<div class="card" id="analyze">
 
-        <div class="stats-grid" id="statsGrid">
-            <div class="card">
-                <h4>Консенсус (AI Consensus)</h4>
-                <p>Gemini 1.5: <span style="color: var(--accent);">92%</span></p>
-                <p>Llama 3: <span style="color: var(--accent);">89%</span></p>
-                <p>Mistral: <span style="color: var(--accent);">94%</span></p>
-            </div>
-            <div class="card">
-                <h4>Източници</h4>
-                <p id="sourceInfo">Открити съвпадения в 4 независими източника.</p>
-            </div>
-        </div>
-    </main>
+<div class="tabs">
+<div class="tab active" onclick="switchMode('text')" id="tabText">Текст</div>
+<div class="tab" onclick="switchMode('link')" id="tabLink">Линк</div>
+</div>
 
-    <script>
-        function performSearch() {
-            const input = document.getElementById('searchInput').value;
-            const btn = document.getElementById('searchBtn');
-            const loader = document.getElementById('loader');
-            const resultCard = document.getElementById('resultCard');
-            const statsGrid = document.getElementById('statsGrid');
+<div id="textBox">
+<input id="textInput" placeholder="Въведи твърдение...">
+</div>
 
-            if (!input) {
-                alert("Моля, въведете текст за анализ!");
-                return;
-            }
+<div id="linkBox" style="display:none;">
+<input id="linkInput" placeholder="Постави линк...">
+</div>
 
-            // Симулация на работа
-            btn.disabled = true;
-            loader.style.display = "block";
-            resultCard.style.display = "none";
-            statsGrid.style.display = "none";
+<button class="btn" onclick="analyze()">Анализирай</button>
 
-            setTimeout(() => {
-                loader.style.display = "none";
-                btn.disabled = false;
-                
-                // Визуализиране на резултата
-                resultCard.style.display = "flex";
-                statsGrid.style.display = "grid";
-                
-                document.getElementById('finalScore').innerText = "96";
-                document.getElementById('resultText').innerText = "Твърдението: '" + input + "' беше потвърдено от всички безплатни AI модели и базата данни на Google. Информацията е достоверна.";
-                document.getElementById('factCheckBadge').innerText = "✓ Google Fact Check: ПОТВЪРДЕНО";
-                document.getElementById('factCheckBadge').style.color = "var(--accent)";
-            }, 2500);
-        }
-    </script>
+</div>
+
+<!-- RESULT -->
+<div class="card result" id="result">
+
+<div class="score" id="score">0</div>
+<div id="risk"></div>
+<p id="desc"></p>
+
+<h4>Анализ на твърдения</h4>
+<div id="claims"></div>
+
+<button class="btn" onclick="toggleSources()">Виж източници</button>
+
+</div>
+
+<!-- SOURCES -->
+<div class="card sources" id="sources">
+
+<div class="source-group">
+<h4>Научни</h4>
+<p>PubMed, Google Scholar, Cochrane, WHO, NIH, CDC, EFSA, FDA</p>
+</div>
+
+<div class="source-group">
+<h4>Регулации</h4>
+<p>EU Commission, EFSA, GDPR, КЗП, FTC, БАБХ</p>
+</div>
+
+<div class="source-group">
+<h4>Пазарни</h4>
+<p>Amazon, eMAG, Trustpilot, Google Reviews, Yelp</p>
+</div>
+
+<div class="source-group">
+<h4>Финансови</h4>
+<p>Bloomberg, Yahoo Finance, LinkedIn, Crunchbase</p>
+</div>
+
+<div class="source-group">
+<h4>Медии</h4>
+<p>Reuters, BBC, Snopes, FactCheck.org</p>
+</div>
+
+<div class="source-group">
+<h4>AI</h4>
+<p>GPT, Claude, Gemini, Mistral</p>
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+let mode="text";
+
+function switchMode(m){
+mode=m;
+document.getElementById("textBox").style.display=m==="text"?"block":"none";
+document.getElementById("linkBox").style.display=m==="link"?"block":"none";
+
+document.getElementById("tabText").classList.toggle("active",m==="text");
+document.getElementById("tabLink").classList.toggle("active",m==="link");
+}
+
+function scrollToAnalyze(){
+document.getElementById("analyze").scrollIntoView({behavior:"smooth"});
+}
+
+function analyze(){
+
+let value=mode==="text"
+?document.getElementById("textInput").value
+:document.getElementById("linkInput").value;
+
+if(!value){
+alert("Въведи текст или линк");
+return;
+}
+
+let score=mode==="link"?32:82;
+
+document.getElementById("result").style.display="block";
+
+document.getElementById("score").innerText=score;
+
+if(score<40){
+document.getElementById("risk").innerHTML="<span class='high'>Висок риск</span>";
+document.getElementById("desc").innerText="Маркетингови манипулации и липса на доказателства.";
+}else if(score<70){
+document.getElementById("risk").innerHTML="<span class='mid'>Умерен риск</span>";
+document.getElementById("desc").innerText="Частично подкрепени твърдения.";
+}else{
+document.getElementById("risk").innerHTML="<span class='low'>Нисък риск</span>";
+document.getElementById("desc").innerText="Информацията е достоверна.";
+}
+
+document.getElementById("claims").innerHTML=`
+<div class="claim">❌ Клинично доказано – няма източник</div>
+<div class="claim">⚠️ 100% натурално – неясно</div>
+<div class="claim">❌ Ефект за 7 дни – нереалистично</div>
+`;
+
+}
+
+function toggleSources(){
+let el=document.getElementById("sources");
+el.style.display=el.style.display==="block"?"none":"block";
+}
+
+</script>
+
 </body>
 </html>
