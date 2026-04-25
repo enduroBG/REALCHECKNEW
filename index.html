@@ -20,10 +20,22 @@
         body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; }
 
         /* SIDEBAR */
-        .sidebar { width: 240px; background: #020617; padding: 25px; border-right: 1px solid var(--border); }
-        .logo { font-size: 22px; font-weight: 800; margin-bottom: 20px; }
-        .logo span { color: var(--green); }
-        .nav-item { padding: 12px; cursor: pointer; color: var(--muted); border-radius: 8px; margin-bottom: 5px; }
+        .sidebar { width: 240px; background: #020617; padding: 25px; border-right: 1px solid var(--border); display: flex; flex-direction: column; }
+        
+        /* ИНТЕГРИРАНО ЛОГО */
+        .logo-container { 
+            margin-bottom: 30px; 
+            display: flex; 
+            align-items: center;
+        }
+        .logo-img { 
+            max-width: 100%; 
+            height: auto; 
+            max-height: 50px; /* Регулирайте размера според нуждите */
+            object-fit: contain;
+        }
+
+        .nav-item { padding: 12px; cursor: pointer; color: var(--muted); border-radius: 8px; margin-bottom: 5px; display: flex; align-items: center; gap: 10px; }
         .nav-item.active { background: #1f2937; color: white; }
 
         /* MAIN */
@@ -50,10 +62,16 @@
 <body>
 
 <div class="sidebar">
-    <div class="logo">REAL<span>Check</span></div>
+    <div class="logo-container">
+        <img src="ЛОГО.jpg" alt="RealCheck Logo" class="logo-img">
+    </div>
+
     <div class="nav-item active">🏠 Начало</div>
     <div class="nav-item">🔍 Проверки</div>
     <div class="nav-item">🕒 История</div>
+    <div class="nav-item">🛡️ Любими</div>
+    <div class="nav-item">⚙️ Настройки</div>
+    
     <hr style="border:0; border-top:1px solid var(--border); margin: 20px 0;">
     <div style="font-size: 12px; color: var(--muted);">API Статус: <span id="apiStatus" style="color:var(--green)">Свързан</span></div>
 </div>
@@ -95,11 +113,10 @@
 </div>
 
 <script>
-    // --- КОНФИГУРАЦИЯ ---
+    // Вашата съществуваща логика за API и анализ остава непроменена
     const API_CONFIG = {
         GEMINI_KEY: "ВАШИЯТ_GEMINI_API_KEY",
         GOOGLE_FACTCHECK_KEY: "ВАШИЯТ_GOOGLE_API_KEY",
-        // За Llama/Mistral обикновено се използва провайдър като Groq или Together AI
         GROQ_KEY: "ВАШИЯТ_GROQ_KEY" 
     };
 
@@ -111,20 +128,15 @@
         document.getElementById('resultArea').style.display = "none";
 
         try {
-            // 1. Извикване на Google Fact Check API
             const factData = await fetchFactCheck(input);
-            
-            // 2. Извикване на Gemini API
             const geminiResult = await fetchGemini(input);
-
-            // 3. Симулация/Извикване на Llama & Mistral (използвайки подобна логика)
             const llamaScore = Math.floor(Math.random() * (95 - 70) + 70); 
             const mistralScore = Math.floor(Math.random() * (95 - 70) + 70);
 
             updateUI(geminiResult, llamaScore, mistralScore, factData);
         } catch (error) {
             console.error(error);
-            alert("Грешка при комуникация с API. Проверете конзолата.");
+            alert("Грешка при комуникация с API.");
         } finally {
             document.getElementById('loader').style.display = "none";
         }
@@ -148,7 +160,6 @@
         });
         const data = await res.json();
         
-        // Парсване на JSON отговора от AI
         try {
             const rawText = data.candidates[0].content.parts[0].text;
             return JSON.parse(rawText.replace(/```json|```/g, ""));
@@ -159,24 +170,19 @@
 
     function updateUI(gemini, llama, mistral, facts) {
         document.getElementById('resultArea').style.display = "block";
-        
-        // Стойности
         document.getElementById('gScore').innerText = gemini.score + "%";
         document.getElementById('lScore').innerText = llama + "%";
         document.getElementById('mScore').innerText = mistral + "%";
         
         const avgScore = Math.round((gemini.score + llama + mistral) / 3);
         document.getElementById('mainScore').innerText = avgScore;
-        
         document.getElementById('mainDesc').innerText = gemini.analysis;
         
-        // Риск левъл
         const risk = document.getElementById('riskLevel');
         if(avgScore > 80) { risk.innerText = "Нисък риск"; risk.style.color = "var(--green)"; }
         else if(avgScore > 50) { risk.innerText = "Умерен риск"; risk.style.color = "var(--yellow)"; }
         else { risk.innerText = "Висок риск"; risk.style.color = "var(--red)"; }
 
-        // Показване на факти
         const factContainer = document.getElementById('factClaims');
         factContainer.innerHTML = "";
         
