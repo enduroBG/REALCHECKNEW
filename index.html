@@ -3,205 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RealCheck Ultra - Multi-Model AI</title>
+    <title>RealCheck Interface</title>
     <style>
-        :root {
-            --bg: #0B1F2A;
-            --card: #111827;
-            --border: #1f2937;
-            --text: #e5e7eb;
-            --muted: #9ca3af;
-            --green: #22C55E;
-            --yellow: #f59e0b;
-            --red: #ef4444;
-            --google-blue: #4285F4;
-        }
-
-        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; }
-
-        /* SIDEBAR */
-        .sidebar { width: 240px; background: #020617; padding: 25px; border-right: 1px solid var(--border); display: flex; flex-direction: column; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #0d1117; color: #e6edf3; display: flex; height: 100vh; }
         
-        /* ИНТЕГРИРАНО ЛОГО */
-        .logo-container { 
-            margin-bottom: 30px; 
-            display: flex; 
-            align-items: center;
-        }
-        .logo-img { 
-            max-width: 100%; 
-            height: auto; 
-            max-height: 50px; /* Регулирайте размера според нуждите */
-            object-fit: contain;
-        }
+        /* Странично меню */
+        .sidebar { width: 260px; background-color: #161b22; padding: 20px; border-right: 1px solid #30363d; }
+        .logo { font-size: 24px; font-weight: bold; color: #fff; margin-bottom: 40px; display: flex; align-items: center; gap: 10px; }
+        .logo span { color: #3fb950; }
+        .menu-item { padding: 12px 16px; margin-bottom: 8px; border-radius: 8px; cursor: pointer; color: #8b949e; font-weight: 500; transition: 0.2s; }
+        .menu-item:hover { background-color: #21262d; color: #c9d1d9; }
+        .menu-item.active { background-color: #238636; color: #ffffff; }
 
-        .nav-item { padding: 12px; cursor: pointer; color: var(--muted); border-radius: 8px; margin-bottom: 5px; display: flex; align-items: center; gap: 10px; }
-        .nav-item.active { background: #1f2937; color: white; }
-
-        /* MAIN */
-        .main { flex: 1; padding: 30px; overflow-y: auto; }
-        .card { background: var(--card); padding: 25px; border-radius: 16px; border: 1px solid var(--border); margin-bottom: 20px; }
-
-        .loading { display: none; color: var(--yellow); font-weight: 600; margin-top: 10px; }
+        /* Основно съдържание */
+        .main-content { flex: 1; padding: 40px; background-color: #0d1117; }
+        h2 { margin-bottom: 20px; color: #fff; font-size: 20px; font-weight: 600; }
         
-        /* RESULTS UI */
-        .score-box { display: flex; align-items: center; gap: 20px; margin-bottom: 20px; }
-        .circle { width: 80px; height: 80px; border-radius: 50%; border: 6px solid var(--green); display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 800; }
+        /* Главна карта (Резултат) */
+        .top-card { background-color: #161b22; border-radius: 16px; padding: 30px; margin-bottom: 24px; display: flex; align-items: center; border: 1px solid #30363d; }
+        .score-container { display: flex; flex-direction: column; align-items: center; margin-right: 40px; }
+        .score-circle { width: 120px; height: 120px; border-radius: 50%; border: 8px solid #3fb950; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: bold; color: #fff; border-left-color: #21262d; }
+        .score-label { margin-top: 10px; color: #8b949e; font-size: 14px; }
+        .top-card-info h3 { color: #fff; font-size: 22px; margin-bottom: 8px; }
+        .top-card-info p { color: #8b949e; margin-bottom: 16px; font-size: 15px; }
+        .btn { background-color: #238636; color: #fff; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; }
         
-        .consensus-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
-        .model-status { background: #020617; padding: 10px; border-radius: 8px; font-size: 12px; text-align: center; border: 1px solid var(--border); }
+        /* Долни карти (Статистика) */
+        .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        .stat-card { background-color: #161b22; border-radius: 16px; padding: 24px; border: 1px solid #30363d; }
+        .stat-card h3 { font-size: 16px; margin-bottom: 20px; color: #fff; }
         
-        input { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid var(--border); background: #020617; color: white; margin-bottom: 10px; }
-        .btn { background: var(--green); padding: 14px 24px; border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: 600; transition: 0.3s; }
-        .btn:hover { opacity: 0.8; }
+        .stat-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; color: #c9d1d9; font-size: 14px; }
+        .stat-number { font-weight: bold; color: #3fb950; }
         
-        .claim { padding: 12px; border-bottom: 1px solid var(--border); display: flex; gap: 10px; }
-        .badge { font-size: 10px; padding: 2px 6px; border-radius: 4px; background: var(--google-blue); color: white; }
+        .category-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; font-size: 14px; }
+        .progress-bar-bg { flex: 1; height: 6px; background-color: #30363d; border-radius: 3px; margin: 0 15px; }
+        .progress-bar-fill { height: 100%; background-color: #3fb950; border-radius: 3px; }
     </style>
 </head>
 <body>
 
-<div class="sidebar">
-    <div class="logo-container">
-        <img src="ЛОГО.jpg" alt="RealCheck Logo" class="logo-img">
+    <div class="sidebar">
+        <div class="logo">🛡️ <span>Real</span>Check</div>
+        <div class="menu-item active">🏠 Начало</div>
+        <div class="menu-item">🔍 Проверки</div>
+        <div class="menu-item">🕒 История</div>
+        <div class="menu-item">⭐ Любими</div>
+        <div class="menu-item" style="margin-top: 40px;">⚙️ Настройки</div>
     </div>
 
-    <div class="nav-item active">🏠 Начало</div>
-    <div class="nav-item">🔍 Проверки</div>
-    <div class="nav-item">🕒 История</div>
-    <div class="nav-item">🛡️ Любими</div>
-    <div class="nav-item">⚙️ Настройки</div>
-    
-    <hr style="border:0; border-top:1px solid var(--border); margin: 20px 0;">
-    <div style="font-size: 12px; color: var(--muted);">API Статус: <span id="apiStatus" style="color:var(--green)">Свързан</span></div>
-</div>
-
-<div class="main">
-    <div class="card">
-        <h2>Мулти-моделен AI Анализ</h2>
-        <p style="color:var(--muted)">Интегрирани ядра: Gemini 1.5, Llama 3, Mistral.</p>
+    <div class="main-content">
+        <h2>Резултат от проверката</h2>
         
-        <div style="margin-top:20px;">
-            <input id="userInput" placeholder="Въведи твърдение, рекламен слоган или линк за проверка...">
-            <button class="btn" onclick="startAnalysis()">Стартирай Дълбок Анализ</button>
-            <div id="loader" class="loading">⚙️ Изпращане на заявки към AI ядрата и Google Fact Check...</div>
+        <div class="top-card">
+            <div class="score-container">
+                <div class="score-circle">82<span style="font-size: 16px; color: #8b949e;">/100</span></div>
+                <div class="score-label">Реалност</div>
+            </div>
+            <div class="top-card-info">
+                <h3>Умерен риск от преувеличени твърдения</h3>
+                <p>Някои твърдения може да са подвеждащи или извадени от контекста.</p>
+                <button class="btn">Виж детайли →</button>
+            </div>
         </div>
-    </div>
 
-    <div id="resultArea" style="display:none;">
-        <div class="card">
-            <div class="score-box">
-                <div class="circle" id="mainScore">--</div>
-                <div>
-                    <h3 id="riskLevel">Анализиране...</h3>
-                    <p id="mainDesc" style="color:var(--muted)"></p>
+        <div class="grid-container">
+            <div class="stat-card">
+                <h3>Анализ на твърденията</h3>
+                <div class="stat-row">
+                    <span>Проверени твърдения</span>
+                    <span class="stat-number">12</span>
+                </div>
+                <div class="stat-row">
+                    <span>Съмнителни твърдения</span>
+                    <span class="stat-number" style="color: #f85149;">3</span>
+                </div>
+                <div class="stat-row">
+                    <span>Непотвърдени твърдения</span>
+                    <span class="stat-number" style="color: #d29922;">2</span>
                 </div>
             </div>
 
-            <div class="consensus-grid">
-                <div class="model-status"><b>Gemini 1.5</b><br><span id="gScore">--</span></div>
-                <div class="model-status"><b>Llama 3</b><br><span id="lScore">--</span></div>
-                <div class="model-status"><b>Mistral</b><br><span id="mScore">--</span></div>
+            <div class="stat-card">
+                <h3>Категории</h3>
+                <div class="category-row">
+                    <span>Ефективност</span>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 85%;"></div></div>
+                    <span>85%</span>
+                </div>
+                <div class="category-row">
+                    <span>Безопасност</span>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 70%;"></div></div>
+                    <span>70%</span>
+                </div>
+                <div class="category-row">
+                    <span>Цена</span>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 60%;"></div></div>
+                    <span>60%</span>
+                </div>
+                <div class="category-row">
+                    <span>Доказателства</span>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 90%;"></div></div>
+                    <span>90%</span>
+                </div>
             </div>
         </div>
-
-        <div class="card">
-            <h4><span class="badge">Google Fact Check Tools</span> Резултати:</h4>
-            <div id="factClaims" style="margin-top:10px;"></div>
-        </div>
     </div>
-</div>
-
-<script>
-    // Вашата съществуваща логика за API и анализ остава непроменена
-    const API_CONFIG = {
-        GEMINI_KEY: "ВАШИЯТ_GEMINI_API_KEY",
-        GOOGLE_FACTCHECK_KEY: "ВАШИЯТ_GOOGLE_API_KEY",
-        GROQ_KEY: "ВАШИЯТ_GROQ_KEY" 
-    };
-
-    async function startAnalysis() {
-        const input = document.getElementById('userInput').value;
-        if (!input) return alert("Моля, въведете текст!");
-
-        document.getElementById('loader').style.display = "block";
-        document.getElementById('resultArea').style.display = "none";
-
-        try {
-            const factData = await fetchFactCheck(input);
-            const geminiResult = await fetchGemini(input);
-            const llamaScore = Math.floor(Math.random() * (95 - 70) + 70); 
-            const mistralScore = Math.floor(Math.random() * (95 - 70) + 70);
-
-            updateUI(geminiResult, llamaScore, mistralScore, factData);
-        } catch (error) {
-            console.error(error);
-            alert("Грешка при комуникация с API.");
-        } finally {
-            document.getElementById('loader').style.display = "none";
-        }
-    }
-
-    async function fetchFactCheck(query) {
-        const url = `https://factchecktools.googleapis.com/v1alpha1/claims:search?query=${encodeURIComponent(query)}&key=${API_CONFIG.GOOGLE_FACTCHECK_KEY}`;
-        const res = await fetch(url);
-        return await res.json();
-    }
-
-    async function fetchGemini(text) {
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_CONFIG.GEMINI_KEY}`;
-        const body = {
-            contents: [{ parts: [{ text: `Анализирай достоверността на това твърдение: "${text}". Върни отговор в JSON формат: {"score": 0-100, "analysis": "кратък текст"}` }] }]
-        };
-
-        const res = await fetch(url, {
-            method: 'POST',
-            body: JSON.stringify(body)
-        });
-        const data = await res.json();
-        
-        try {
-            const rawText = data.candidates[0].content.parts[0].text;
-            return JSON.parse(rawText.replace(/```json|```/g, ""));
-        } catch(e) {
-            return { score: 85, analysis: "AI потвърди наличието на логическа последователност." };
-        }
-    }
-
-    function updateUI(gemini, llama, mistral, facts) {
-        document.getElementById('resultArea').style.display = "block";
-        document.getElementById('gScore').innerText = gemini.score + "%";
-        document.getElementById('lScore').innerText = llama + "%";
-        document.getElementById('mScore').innerText = mistral + "%";
-        
-        const avgScore = Math.round((gemini.score + llama + mistral) / 3);
-        document.getElementById('mainScore').innerText = avgScore;
-        document.getElementById('mainDesc').innerText = gemini.analysis;
-        
-        const risk = document.getElementById('riskLevel');
-        if(avgScore > 80) { risk.innerText = "Нисък риск"; risk.style.color = "var(--green)"; }
-        else if(avgScore > 50) { risk.innerText = "Умерен риск"; risk.style.color = "var(--yellow)"; }
-        else { risk.innerText = "Висок риск"; risk.style.color = "var(--red)"; }
-
-        const factContainer = document.getElementById('factClaims');
-        factContainer.innerHTML = "";
-        
-        if (facts.claims && facts.claims.length > 0) {
-            facts.claims.slice(0, 3).forEach(c => {
-                factContainer.innerHTML += `
-                    <div class="claim">
-                        <span>🔍</span>
-                        <div>
-                            <b>${c.claimant || "Източник"}</b>: ${c.claimReview[0].textualRating}
-                            <br><small>${c.text}</small>
-                        </div>
-                    </div>`;
-            });
-        } else {
-            factContainer.innerHTML = "<p style='color:var(--muted)'>Няма директни съвпадения в Google Fact Check Explorer.</p>";
-        }
-    }
-</script>
 
 </body>
 </html>
