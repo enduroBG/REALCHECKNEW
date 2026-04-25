@@ -1,4 +1,4 @@
-html_content = """<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="bg">
 <head>
     <meta charset="UTF-8">
@@ -17,34 +17,132 @@ html_content = """<!DOCTYPE html>
             --google-blue: #4285F4;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
-        body { background-color: var(--bg-dark); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; }
         
-        .sidebar { width: 260px; background-color: var(--card-bg); padding: 25px; border-right: 1px solid var(--border); display: flex; flex-direction: column; }
-        .logo { font-size: 26px; font-weight: 800; color: #fff; margin-bottom: 45px; display: flex; align-items: center; gap: 12px; letter-spacing: -1px; }
+        body { 
+            background-color: var(--bg-dark); 
+            color: var(--text-main); 
+            display: flex; 
+            height: 100vh; 
+            overflow: hidden; 
+        }
+
+        .sidebar { 
+            width: 260px; 
+            background-color: var(--card-bg); 
+            padding: 25px; 
+            border-right: 1px solid var(--border); 
+            display: flex; 
+            flex-direction: column; 
+            flex-shrink: 0;
+        }
+
+        .logo { 
+            font-size: 26px; 
+            font-weight: 800; 
+            color: #fff; 
+            margin-bottom: 45px; 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+        }
         .logo span { color: var(--accent); }
-        .menu-item { padding: 12px 16px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; color: var(--text-dim); font-weight: 500; transition: all 0.3s; display: flex; align-items: center; gap: 10px; }
+
+        .menu-item { 
+            padding: 12px 16px; 
+            margin-bottom: 10px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            color: var(--text-dim); 
+            transition: 0.3s; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+        }
         .menu-item:hover { background-color: #21262d; color: #fff; }
         .menu-item.active { background-color: #238636; color: #fff; }
 
-        .main-content { flex: 1; padding: 40px; overflow-y: auto; background: radial-gradient(circle at top right, #161b22 0%, #0d1117 40%); }
-        .header-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        h2 { font-size: 24px; font-weight: 600; }
+        .main-content { 
+            flex: 1; 
+            padding: 40px; 
+            overflow-y: auto; 
+            background: radial-gradient(circle at top right, #161b22 0%, #0d1117 40%); 
+        }
 
-        .result-card { background-color: var(--card-bg); border-radius: 20px; padding: 35px; margin-bottom: 30px; display: flex; align-items: center; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: relative; overflow: hidden; }
-        .result-card::before { content: ""; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--accent); }
+        .header-area { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 30px; 
+        }
+
+        .result-card { 
+            background-color: var(--card-bg); 
+            border-radius: 20px; 
+            padding: 35px; 
+            margin-bottom: 30px; 
+            display: flex; 
+            align-items: center; 
+            border: 1px solid var(--border); 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); 
+            position: relative; 
+            overflow: hidden;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
         
-        .score-circle-container { position: relative; margin-right: 50px; }
-        .score-circle { width: 140px; height: 140px; border-radius: 50%; border: 10px solid var(--accent); display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(63, 185, 80, 0.05); }
+        .result-card::before { 
+            content: ""; 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 4px; 
+            height: 100%; 
+            background: var(--accent); 
+        }
+
+        .score-circle-container { flex-shrink: 0; }
+        .score-circle { 
+            width: 140px; 
+            height: 140px; 
+            border-radius: 50%; 
+            border: 10px solid var(--accent); 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            background: rgba(63, 185, 80, 0.05); 
+        }
         .score-value { font-size: 42px; font-weight: 800; color: #fff; }
         .score-max { font-size: 16px; color: var(--text-dim); }
-        
-        .result-info h3 { font-size: 26px; margin-bottom: 10px; color: #fff; }
-        .result-info p { color: var(--text-dim); line-height: 1.6; max-width: 500px; margin-bottom: 20px; }
-        .badge { background: rgba(66, 133, 244, 0.15); color: var(--google-blue); padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; border: 1px solid var(--google-blue); }
 
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
-        .card { background-color: var(--card-bg); border-radius: 16px; padding: 25px; border: 1px solid var(--border); }
+        .result-info { flex: 1; min-width: 300px; }
+        .result-info h3 { font-size: 26px; margin-bottom: 10px; color: #fff; }
+        .result-info p { color: var(--text-dim); line-height: 1.6; margin-bottom: 20px; }
+
+        .badge { 
+            background: rgba(66, 133, 244, 0.15); 
+            color: var(--google-blue); 
+            padding: 6px 14px; 
+            border-radius: 20px; 
+            font-size: 13px; 
+            font-weight: 600; 
+            border: 1px solid var(--google-blue); 
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .stats-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
+            gap: 25px; 
+        }
+        .card { 
+            background-color: var(--card-bg); 
+            border-radius: 16px; 
+            padding: 25px; 
+            border: 1px solid var(--border); 
+        }
         .card h4 { margin-bottom: 20px; color: var(--text-dim); text-transform: uppercase; font-size: 12px; letter-spacing: 1px; }
 
         .model-row { display: flex; align-items: center; margin-bottom: 18px; }
@@ -56,11 +154,20 @@ html_content = """<!DOCTYPE html>
         .claim-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #21262d; font-size: 14px; }
         .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 8px; }
 
-        .btn-main { background-color: var(--accent); color: #fff; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.3s; }
+        .btn-main { 
+            background-color: var(--accent); 
+            color: #fff; 
+            border: none; 
+            padding: 12px 25px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-weight: 600; 
+            transition: 0.3s; 
+        }
         .btn-main:hover { opacity: 0.9; transform: translateY(-2px); }
 
         @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
-        .analyzing { animation: pulse 1.5s infinite; color: var(--warning); font-weight: bold; }
+        .analyzing { animation: pulse 1.5s infinite; color: var(--warning); }
     </style>
 </head>
 <body>
@@ -80,7 +187,7 @@ html_content = """<!DOCTYPE html>
             <button class="btn-main" onclick="simulateAnalysis()">+ Стартирай нов анализ</button>
         </header>
 
-        <section class="result-card" id="mainResult">
+        <section class="result-card">
             <div class="score-circle-container">
                 <div class="score-circle">
                     <span class="score-value" id="scoreNum">82</span>
@@ -88,21 +195,19 @@ html_content = """<!DOCTYPE html>
                 </div>
             </div>
             <div class="result-info">
-                <div style="margin-bottom: 10px;">
-                    <span class="badge">✓ Потвърдено от Google Fact Check Explorer</span>
-                </div>
+                <span class="badge">✓ Потвърдено от Google Fact Check</span>
                 <h3>Умерен риск от манипулация</h3>
-                <p id="summaryText">Анализираният текст съдържа твърдения, които са частично верни, но липсва контекст. AI моделите засякоха логическо противоречие във втория параграф.</p>
+                <p id="summaryText">Анализираният текст съдържа твърдения, които са частично верни, но липсва контекст. AI моделите засякоха логическо противоречие.</p>
                 <div style="display: flex; gap: 15px;">
-                    <button class="btn-main" style="background: #21262d; border: 1px solid var(--border);">Свали PDF доклад</button>
-                    <button class="btn-main">Детайлен преглед</button>
+                    <button class="btn-main" style="background: #21262d; border: 1px solid var(--border);">Свали PDF</button>
+                    <button class="btn-main">Детайли</button>
                 </div>
             </div>
         </section>
 
         <div class="stats-grid">
             <div class="card">
-                <h4>Консенсус на AI Моделите</h4>
+                <h4>AI Консенсус</h4>
                 <div class="model-row">
                     <span class="model-name">Gemini 1.5 Flash</span>
                     <div class="progress-container"><div class="progress-bar" style="width: 85%; background: var(--accent);"></div></div>
@@ -113,12 +218,7 @@ html_content = """<!DOCTYPE html>
                     <div class="progress-container"><div class="progress-bar" style="width: 78%; background: var(--accent);"></div></div>
                     <span class="model-val">78%</span>
                 </div>
-                <div class="model-row">
-                    <span class="model-name">Mistral AI</span>
-                    <div class="progress-container"><div class="progress-bar" style="width: 92%; background: var(--accent);"></div></div>
-                    <span class="model-val">92%</span>
-                </div>
-                <div class="model-row" style="margin-top: 25px; padding-top: 15px; border-top: 1px solid var(--border);">
+                <div class="model-row" style="margin-top: 20px; padding-top: 10px; border-top: 1px solid var(--border);">
                     <span class="model-name" style="color: var(--google-blue);">Google Database</span>
                     <div class="progress-container"><div class="progress-bar" style="width: 100%; background: var(--google-blue);"></div></div>
                     <span class="model-val" style="color: var(--google-blue);">100%</span>
@@ -126,17 +226,17 @@ html_content = """<!DOCTYPE html>
             </div>
 
             <div class="card">
-                <h4>Разбивка на твърденията</h4>
+                <h4>Разбивка</h4>
                 <div class="claim-item">
-                    <span><span class="status-dot" style="background: var(--accent);"></span>Официални цитати</span>
+                    <span><span class="status-dot" style="background: var(--accent);"></span>Факти</span>
                     <span style="font-weight: 600;">08</span>
                 </div>
                 <div class="claim-item">
-                    <span><span class="status-dot" style="background: var(--warning);"></span>Липса на източник</span>
+                    <span><span class="status-dot" style="background: var(--warning);"></span>Липсва източник</span>
                     <span style="font-weight: 600;">03</span>
                 </div>
                 <div class="claim-item">
-                    <span><span class="status-dot" style="background: var(--danger);"></span>Директна дезинформация</span>
+                    <span><span class="status-dot" style="background: var(--danger);"></span>Дезинформация</span>
                     <span style="font-weight: 600;">01</span>
                 </div>
             </div>
@@ -151,18 +251,15 @@ html_content = """<!DOCTYPE html>
             btn.innerHTML = "Анализиране...";
             btn.classList.add('analyzing');
             score.innerHTML = "--";
-            summary.innerHTML = "Изпращане на заявки към Gemini, Llama 3 и Google Fact Check API...";
+            summary.innerHTML = "Изпращане на заявки към моделите...";
             setTimeout(() => {
                 btn.innerHTML = "+ Стартирай нов анализ";
                 btn.classList.remove('analyzing');
                 score.innerHTML = "94";
-                summary.innerHTML = "Анализът приключи успешно. Всички AI модели и базата данни на Google потвърдиха автентичността на информацията. Висок индекс на доверие (94/100).";
+                summary.innerHTML = "Анализът приключи успешно. Всички системи потвърдиха информацията.";
                 document.querySelectorAll('.progress-bar').forEach(bar => { bar.style.width = "95%"; });
-            }, 2500);
+            }, 2000);
         }
     </script>
 </body>
-</html>"""
-
-with open("index.html", "w", encoding="utf-8") as f:
-    f.write(html_content)
+</html>
